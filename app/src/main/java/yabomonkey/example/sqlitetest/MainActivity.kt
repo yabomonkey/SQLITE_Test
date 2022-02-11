@@ -28,6 +28,14 @@ class MainActivity : AppCompatActivity() {
         appBarConfiguration = AppBarConfiguration(navController.graph)
         setupActionBarWithNavController(navController, appBarConfiguration)
 
+        val database = this.openOrCreateDatabase("sqlite-test-1.db", MODE_PRIVATE, null)
+        var sql = "CREATE TABLE contacts(_id INTEGER PRIMARY KEY NOT NULL, name TEXT, phone INTEGER, email TEXT)"
+        database.execSQL(sql)
+
+        sql = "INSERT INTO contacts(name, phone, email) VALUES('tim', 6456789, 'tim@gmail.com'"
+        database.execSQL(sql)
+        
+
         binding.fab.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show()
