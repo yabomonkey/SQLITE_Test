@@ -1,6 +1,8 @@
 package yabomonkey.example.sqlitetest
 
+import android.content.ContentValues
 import android.os.Bundle
+import android.util.Log
 import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
@@ -10,6 +12,8 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import android.view.Menu
 import android.view.MenuItem
 import yabomonkey.example.sqlitetest.databinding.ActivityMainBinding
+
+private const val TAG = "MainActivity"
 
 class MainActivity : AppCompatActivity() {
 
@@ -29,12 +33,30 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
 
         val database = this.openOrCreateDatabase("sqlite-test-1.db", MODE_PRIVATE, null)
+
+        var dropTableCommand = "DROP TABLE contacts"
+        database.execSQL(dropTableCommand)
+        Log.d(TAG, ",onCreate: $dropTableCommand")
+
         var sql = "CREATE TABLE contacts(_id INTEGER PRIMARY KEY NOT NULL, name TEXT, phone INTEGER, email TEXT)"
+        Log.d(TAG, ".onCreate: sql is $sql")
         database.execSQL(sql)
 
-        sql = "INSERT INTO contacts(name, phone, email) VALUES('tim', 6456789, 'tim@gmail.com'"
+        sql = "INSERT INTO contacts(name, phone, email) VALUES('tim', 6456789, 'tim@gmail.com')"
+        Log.d(TAG, ".onCreate: sql is $sql")
         database.execSQL(sql)
-        
+
+        val values = ContentValues().apply {
+            put("name", "Fred")
+            put("phone", 12345)
+            put("email", "fred@merk.com")
+        }
+
+        val generatedID  = database.insert("contacts", null, values)
+
+        Log.d(TAG, ".onCreate: record created with ID $generatedID")
+
+
 
         binding.fab.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
