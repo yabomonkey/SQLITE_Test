@@ -54,6 +54,10 @@ class MainActivity : AppCompatActivity() {
 
         val generatedID  = database.insert("contacts", null, values)
 
+        val query = database.rawQuery("SELECT * FROM contacts", null)
+        query.use {
+            
+        }
         Log.d(TAG, ".onCreate: record created with ID $generatedID")
 
 
