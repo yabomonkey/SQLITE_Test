@@ -33,32 +33,46 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
 
         val database = this.openOrCreateDatabase("sqlite-test-1.db", MODE_PRIVATE, null)
-
-        var dropTableCommand = "DROP TABLE contacts"
-        database.execSQL(dropTableCommand)
-        Log.d(TAG, ",onCreate: $dropTableCommand")
-
-        var sql = "CREATE TABLE contacts(_id INTEGER PRIMARY KEY NOT NULL, name TEXT, phone INTEGER, email TEXT)"
-        Log.d(TAG, ".onCreate: sql is $sql")
-        database.execSQL(sql)
-
-        sql = "INSERT INTO contacts(name, phone, email) VALUES('tim', 6456789, 'tim@gmail.com')"
-        Log.d(TAG, ".onCreate: sql is $sql")
-        database.execSQL(sql)
-
-        val values = ContentValues().apply {
-            put("name", "Fred")
-            put("phone", 12345)
-            put("email", "fred@merk.com")
-        }
-
-        val generatedID  = database.insert("contacts", null, values)
+//
+//        var dropTableCommand = "DROP TABLE IF EXISTS contacts"
+//        database.execSQL(dropTableCommand)
+//        Log.d(TAG, ".onCreate: $dropTableCommand")
+//
+//        var sql = "CREATE TABLE IF NOT EXISTS contacts(_id INTEGER PRIMARY KEY NOT NULL, name TEXT, phone INTEGER, email TEXT)"
+//        Log.d(TAG, ".onCreate: sql is $sql")
+//        database.execSQL(sql)
+//
+//        sql = "INSERT INTO contacts(name, phone, email) VALUES('tim', 6456789, 'tim@gmail.com')"
+//        Log.d(TAG, ".onCreate: sql is $sql")
+//        database.execSQL(sql)
+//
+//        val values = ContentValues().apply {
+//            put("name", "Fred")
+//            put("phone", 12345)
+//            put("email", "fred@merk.com")
+//        }
+//
+//        val generatedID  = database.insert("contacts", null, values)
 
         val query = database.rawQuery("SELECT * FROM contacts", null)
         query.use {
-            
+            while(it.moveToNext()) {
+                // Cycle through all the records
+                with(it) {
+                    val id = getLong(0)
+                    val name = getString(1)
+                    val phone = getInt(2)
+                    val email = getString(3)
+
+                    val result = "ID = $id, Name = $name, Phone = $phone, Email = $email"
+                    Log.d(TAG, "onCreate: reading data $result")
+                }
+            }
         }
-        Log.d(TAG, ".onCreate: record created with ID $generatedID")
+
+        database.close()
+
+//        Log.d(TAG, ".onCreate: record created with ID $generatedID")
 
 
 
